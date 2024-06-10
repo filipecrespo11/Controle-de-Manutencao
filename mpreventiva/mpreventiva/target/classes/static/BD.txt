@@ -1,0 +1,85 @@
+CREATE TABLE computador (
+	id_computador BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome_computador VARCHAR(30) NOT NULL,
+    fabricante VARCHAR(30) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    service_tag VARCHAR(100) NOT NULL,
+    patrimonio VARCHAR(100) NOT NULL,
+    unidade varchar(255) not null,
+    setor varchar(255) not null,
+    estado ENUM('ativo','inativo','consultar') NOT NULL DEFAULT ('consultar')
+    
+);
+
+CREATE TABLE tecnico (
+	id_tecnico BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome varchar(255) not null,
+    login varchar(255) not null,
+    senha varchar(255) not null
+    
+);
+
+CREATE TABLE manutencao (
+	id_manutencao BIGINT NOT NULL AUTO_INCREMENT,
+    chamado int,
+    data_manutencao date,
+    data_manutencao_anterior date,
+    data_manutencao_proxima date,
+    status_manutencao ENUM('realizada','nao_realizada') NOT NULL DEFAULT ('nao_realizada'),
+    id_tecnico BIGINT,
+	id_computador BIGINT,
+    
+    PRIMARY KEY (id_manutencao),
+    FOREIGN KEY (id_tecnico) REFERENCES tecnico(id_tecnico),
+    FOREIGN KEY (id_computador) REFERENCES computador(id_computador)
+);
+
+-- Trigger para definir data_manutencao_proxima
+DELIMITER //
+
+CREATE TRIGGER before_insert_manutencao_proxima
+BEFORE INSERT ON manutencao
+FOR EACH ROW
+BEGIN
+    IF NEW.data_manutencao IS NOT NULL THEN
+        SET NEW.data_manutencao_proxima = DATE_ADD(NEW.data_manutencao, INTERVAL 1 YEAR);
+    END IF;
+END//
+
+DELIMITER ;
+
+-- Trigger para definir data_manutencao_anterior
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_manutencao_anterior
+BEFORE INSERT ON manutencao
+FOR EACH ROW
+BEGIN
+    DECLARE last_manutencao DATE;
+    SET last_manutencao = (SELECT MAX(data_manutencao) FROM manutencao WHERE id_computador = NEW.id_computador AND data_manutencao < NEW.data_manutencao);
+    
+    IF last_manutencao IS NOT NULL THEN
+        SET NEW.data_manutencao_anterior = last_manutencao;
+    END IF;
+END//
+
+-- Ativar o event_scheduler
+SET GLOBAL event_scheduler = ON;
+
+-- Desabilitar o safe update mode temporariamente
+SET SQL_SAFE_UPDATES = 0;
+
+-- Verificar se o event_scheduler está ativado
+SHOW VARIABLES LIKE 'event_scheduler';
+
+-- Criar o evento agendado para atualizar o status das manutenções
+CREATE EVENT IF NOT EXISTS atualizar_status_manutencao
+ON SCHEDULE EVERY 1 DAY
+DO
+    UPDATE manutencao
+    SET status_manutencao = 'nao_realizada'
+    WHERE status_manutencao = 'realizada'
+    AND data_manutencao <= DATE_SUB(CURDATE(), INTERVAL 1 YEAR);
+    
+    
