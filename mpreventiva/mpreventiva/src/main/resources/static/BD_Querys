@@ -1,0 +1,61 @@
+SELECT 
+	tecnico.nome AS Tecnico,
+	manutencao.chamado AS Chamado,
+	manutencao.data_manutencao AS Data,
+    computador.nome_computador AS Nome,
+    computador.fabricante AS Fabricante,
+    computador.modelo AS Modelo,
+    computador.service_tag AS 'Service Tag',
+    computador.unidade AS Unidade,
+    computador.setor AS Setor,
+    manutencao.data_manutencao_anterior AS 'Data Manutenção Anterior',
+    manutencao.data_manutencao_proxima AS 'Data Próxima Manutenção',
+    manutencao.status_manutencao AS Status,
+    computador.estado AS Estado
+FROM 
+    manutencao
+JOIN 
+    tecnico ON manutencao.id_tecnico = tecnico.id_tecnico
+JOIN 
+    computador ON manutencao.id_computador = computador.id_computador
+WHERE
+	manutencao.data_manutencao_proxima < CURDATE();
+
+------------------------------------------------------------------------------------
+
+<dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-mysql</artifactId>
+    </dependency>
+
+
+------------------------------------------------------------------------------------
+
+SELECT 
+	tecnico.nome AS Tecnico,
+	manutencao.chamado AS Chamado,
+	manutencao.data_manutencao AS Data,
+    computador.nome_computador AS Nome,
+    computador.fabricante AS Fabricante,
+    computador.modelo AS Modelo,
+    computador.service_tag AS 'Service Tag',
+    computador.unidade AS Unidade,
+    computador.setor AS Setor,
+    manutencao.data_manutencao_anterior AS 'Data Manutenção Anterior',
+    manutencao.data_manutencao_proxima AS 'Data Próxima Manutenção',
+    manutencao.status_manutencao AS Status,
+    computador.estado AS Estado
+FROM 
+    manutencao
+JOIN 
+    tecnico ON manutencao.id_tecnico = tecnico.id_tecnico
+JOIN 
+    computador ON manutencao.id_computador = computador.id_computador;
+
+------------------------------------------------------------------------------------
+
+
