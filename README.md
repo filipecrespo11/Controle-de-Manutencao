@@ -19,6 +19,8 @@ JavaScript
 
 MySQL
 
+BCrypt
+
 # Funcionalidades Principais
 Controle de ativos : Os usuários poderão controlar os ativos de uma empresa a partir do Software que possibilitará o usuário cadastrar um computador como ativo ou inativo.
 
