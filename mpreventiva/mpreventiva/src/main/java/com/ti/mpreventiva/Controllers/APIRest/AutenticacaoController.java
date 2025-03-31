@@ -42,11 +42,14 @@ public class AutenticacaoController {
 	 private SecurityConfiguration securityConfiguration;
 
 	
-	@PostMapping("/user")
-	public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados){
-		var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
-		var autenticacao = authenticationManager.authenticate(token);
-		var tokenJWT = tokenService.gerarToken((Tecnico)autenticacao.getPrincipal());
-		return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
-	}
+	 @PostMapping("/user")
+	 public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
+		 System.out.println("Tentativa de login com login: " + dados.login());
+		 var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+		 var autenticacao = authenticationManager.authenticate(token);
+		 System.out.println("Autenticação bem-sucedida para login: " + dados.login());
+		 var tokenJWT = tokenService.gerarToken((Tecnico) autenticacao.getPrincipal());
+		 System.out.println("Token gerado: " + tokenJWT);
+		 return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+	 }
 }

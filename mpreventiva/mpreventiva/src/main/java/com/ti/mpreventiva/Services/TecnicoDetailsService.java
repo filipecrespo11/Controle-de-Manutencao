@@ -21,8 +21,11 @@ public class TecnicoDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("Tentativa de autenticação para o login: " + username);
         Tecnico tecnico = tecnicoRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário inexistente ou senha inválida"));
+        System.out.println("Usuário encontrado: " + tecnico.getLogin());
+        System.out.println("Senha do usuário: " + tecnico.getSenha());
         return new User(tecnico.getLogin(), tecnico.getSenha(), List.of());
     }
 }
