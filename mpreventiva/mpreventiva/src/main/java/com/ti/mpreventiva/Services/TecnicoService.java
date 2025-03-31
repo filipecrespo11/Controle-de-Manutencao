@@ -2,6 +2,7 @@ package com.ti.mpreventiva.Services;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ public class TecnicoService {
 	private TecnicoRepository tecnicoRepository;
 
 	public void adicionarTecnico(DadosAdicionarTecnico dados) {
-		Tecnico tecnicoExistente = buscarPorNome(dados.nome());
-		if (tecnicoExistente == null) {
+		Optional<Tecnico> tecnicoExistente = tecnicoRepository.buscarPorNome(dados.nome());
+		if (tecnicoExistente.isEmpty()) {
 			Tecnico tecnico = new Tecnico(dados);
 			tecnicoRepository.save(tecnico);
 		} else {
@@ -29,13 +30,10 @@ public class TecnicoService {
 	}
 
 	public void atualizarTecnico(DadosAtualizarTecnico dados) {
-		Tecnico tecnicoExistente = buscarPorNome(dados.nome());
-		if (tecnicoExistente != null) {
-			tecnicoExistente.AtualizarInformacoesTecnico(dados);
-			tecnicoRepository.save(tecnicoExistente);
-		} else {
-			throw new IllegalArgumentException("Tecnico nao encontrado com o nome fornecido");
-		}
+		Tecnico tecnicoExistente = tecnicoRepository.findById(dados.id())
+				.orElseThrow(() -> new IllegalArgumentException("Técnico não encontrado com o ID fornecido"));
+		tecnicoExistente.AtualizarInformacoesTecnico(dados);
+		tecnicoRepository.save(tecnicoExistente);
 	}
 
 	public void deletarTecnico(Long id_tecnico) {
@@ -46,7 +44,7 @@ public class TecnicoService {
 		}
 	}
 
-	public Tecnico buscarPorNome(String nome) {
+	public Optional<Tecnico> buscarPorNome(String nome) {
 		return tecnicoRepository.buscarPorNome(nome);
 	}
 

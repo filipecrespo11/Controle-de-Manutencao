@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MpreventivaApplication<mpreventiva>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ti.mpreventiva.MpreventivaApplication",
+            "projectName": "mpreventiva",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

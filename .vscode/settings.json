@@ -1,0 +1,9 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "files.readonlyInclude": {
+        "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
+    },
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "bitoAI.codeCompletion.enableAutoCompletion": false,
+    "java.debug.settings.onBuildFailureProceed": true
+}
