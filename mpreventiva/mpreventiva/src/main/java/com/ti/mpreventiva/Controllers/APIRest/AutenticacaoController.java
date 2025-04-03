@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +31,8 @@ public class AutenticacaoController {
 	 @Qualifier("tecnicoDetailsService")
 	 private UserDetailsService userDetailsService;
 
-	 @Autowired
-	 private PasswordEncoder passwordEncoder;
+	  /*@Autowired
+	   private PasswordEncoder passwordEncoder; */
 
 	 @Autowired
 	 private TokenService tokenService; 
@@ -41,15 +41,24 @@ public class AutenticacaoController {
 	 @Lazy
 	 private SecurityConfiguration securityConfiguration;
 
-	
-	 @PostMapping("/user")
-	 public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
-		 System.out.println("Tentativa de login com login: " + dados.login());
-		 var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
-		 var autenticacao = authenticationManager.authenticate(token);
-		 System.out.println("Autenticação bem-sucedida para login: " + dados.login());
-		 var tokenJWT = tokenService.gerarToken((Tecnico) autenticacao.getPrincipal());
-		 System.out.println("Token gerado: " + tokenJWT);
-		 return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+	 @GetMapping("/")
+	 public String loginRoot() {
+		 return "login"; // Nome do arquivo HTML (login.html) na pasta templates
 	 }
+
+	 /*@GetMapping("/user")
+    public ResponseEntity<String> getUser() {
+        return ResponseEntity.ok("Login User Endpoint");
+    }*/
+	
+	@PostMapping("/user")
+public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
+    System.out.println("Tentativa de login com login: " + dados.login());
+    var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+    var autenticacao = authenticationManager.authenticate(token);
+    System.out.println("Autenticação bem-sucedida para login: " + dados.login());
+    var tokenJWT = tokenService.gerarToken((Tecnico) autenticacao.getPrincipal());
+    System.out.println("Token gerado: " + tokenJWT);
+    return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+}
 }

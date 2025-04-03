@@ -1,5 +1,4 @@
 package com.ti.mpreventiva.Services;
-import org.springframework.context.annotation.Primary;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import com.ti.mpreventiva.Entities.Tecnico;
 import com.ti.mpreventiva.Repository.TecnicoRepository;
 
 @Service
-@Primary
 public class TecnicoDetailsService implements UserDetailsService {
 
     @Autowired

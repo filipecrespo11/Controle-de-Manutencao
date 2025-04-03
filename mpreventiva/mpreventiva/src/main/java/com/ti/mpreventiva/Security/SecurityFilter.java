@@ -26,19 +26,22 @@ public class SecurityFilter extends OncePerRequestFilter {
 	private TecnicoRepository tecnicoRepository;
 	
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		var tokenJWT = recuperarToken(request);
-		
-		if (tokenJWT != null) {
-			var subject = tokenService.getSubject(tokenJWT);
-			var usuario = tecnicoRepository.findByLogin(subject);
-			var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
-		
-		filterChain.doFilter(request, response);
-	}
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+    var tokenJWT = recuperarToken(request);
+
+    if (tokenJWT != null) {
+        var subject = tokenService.getSubject(tokenJWT);
+        var usuario = tecnicoRepository.findByLogin(subject);
+        if (usuario.isPresent()) {
+            var tecnico = usuario.get();
+            var authentication = new UsernamePasswordAuthenticationToken(tecnico, null, tecnico.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+    }
+
+    filterChain.doFilter(request, response);
+			}
 	
 	private String recuperarToken(HttpServletRequest request) {
 		var authorizationHeader = request.getHeader("Authorization");

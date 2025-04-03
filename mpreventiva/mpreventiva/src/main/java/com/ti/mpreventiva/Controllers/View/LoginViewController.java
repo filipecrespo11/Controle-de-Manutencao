@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginViewController {
 	
-	@GetMapping("/logg")
+	@GetMapping("/login")
 	public String EfetuarLogin() {
 		return "login"; // Retorna o caminho correto do arquivo HTML
 	}

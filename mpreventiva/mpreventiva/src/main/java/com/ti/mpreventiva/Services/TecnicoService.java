@@ -29,11 +29,16 @@ public class TecnicoService {
 		}
 	}
 
-	public void atualizarTecnico(DadosAtualizarTecnico dados) {
-		Tecnico tecnicoExistente = tecnicoRepository.findById(dados.id())
-				.orElseThrow(() -> new IllegalArgumentException("Técnico não encontrado com o ID fornecido"));
-		tecnicoExistente.AtualizarInformacoesTecnico(dados);
-		tecnicoRepository.save(tecnicoExistente);
+	public class DadosAtualizarTecnico {
+		private Long id; // Certifique-se de que o atributo existe
+	
+		public Long getId() {
+			return id;
+		}
+	
+		public void setId(Long id) {
+			this.id = id;
+		}
 	}
 
 	public void deletarTecnico(Long id_tecnico) {

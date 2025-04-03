@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ti.mpreventiva.DTO.DadosAdicionarTecnico;
 import com.ti.mpreventiva.DTO.DadosAtualizarTecnico;
 import com.ti.mpreventiva.DTO.DadosListagemTecnico;
+import com.ti.mpreventiva.Repository.TecnicoRepository;
 import com.ti.mpreventiva.Services.TecnicoService;
 
 import jakarta.transaction.Transactional;
@@ -25,6 +26,9 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/tecnico")
 public class TecnicoRestController {
+
+	@Autowired
+private TecnicoRepository tecnicoRepository;
 
 	@Autowired
 	private TecnicoService tecnicoService;
@@ -38,10 +42,11 @@ public class TecnicoRestController {
 
 	@PutMapping("/update/{id_tecnico}")
 	@Transactional
-	public ResponseEntity<Void> updateTecnico(@PathVariable Long id_tecnico,
-			@RequestBody @Valid DadosAtualizarTecnico dados) {
-		tecnicoService.atualizarTecnico(dados);
-		return ResponseEntity.ok().build();
+	public void atualizarTecnico(@RequestBody @Valid DadosAtualizarTecnico dados) {
+		var tecnico = tecnicoRepository.findById(dados.id_tecnico())
+				.orElseThrow(() -> new RuntimeException("Técnico não encontrado com o ID fornecido"));
+		tecnico.AtualizarInformacoesTecnico(dados); // Certifique-se de que o método AtualizarInformacoesTecnico existe na classe Tecnico
+		tecnicoRepository.save(tecnico);
 	}
 
 	@GetMapping("/list")
@@ -58,7 +63,7 @@ public class TecnicoRestController {
 		return ResponseEntity.noContent().build();
 	}
 
-	/*
+	
 	@GetMapping("/find/{id_tecnico}")
 	@Transactional
 	public ResponseEntity<DadosListagemTecnico> findTecnico(@PathVariable Long id_tecnico) {
@@ -66,5 +71,5 @@ public class TecnicoRestController {
 		return tecnico.map(value -> ResponseEntity.ok(new DadosListagemTecnico(value)))
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
-	*/
+	
 }

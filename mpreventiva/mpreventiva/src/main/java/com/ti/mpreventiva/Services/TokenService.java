@@ -16,7 +16,8 @@ import com.ti.mpreventiva.Entities.Tecnico;
 @Service
 public class TokenService {
 
-	@Value("${api.security.token.secret}")
+	@Value("jwt.secret=${jwt.secret}")
+	// @Value("${jwt.secret}")
 	private String secret;
 
 	public String gerarToken(Tecnico tecnico) {
