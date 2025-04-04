@@ -3,57 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>Mpreventiva</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Login</h2>
-        <form id="loginForm">	
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p id="message"></p>
-    </div>
+    
 
-    <script>
-	document.getElementById('loginForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
 
-    // Obtém os valores dos campos de entrada
-    let username = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
+<script>
+const Login = () => {
+  const [username, setUsername] = useState(""); // Estado para o nome de usuário
+  const [password, setPassword] = useState(""); // Estado para a senha
+  const navigate = useNavigate();
 
-    // Verifica se os campos estão preenchidos
-    if (!username || !password) {
-        document.getElementById('message').innerText = 'Por favor, preencha todos os campos.';
-        return;
-    }
+
+  // Função para lidar com o login
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
     try {
-        const BASE_URL = 'http://localhost:8080'; // URL base do backend
-        let response = await fetch(`${BASE_URL}/login/user`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ login: username, senha: password }) // Corpo da requisição
-        });
+      const response = await fetch("http://localhost:8080", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }), // Enviando username e password
+      });
 
-        if (response.ok) {
-            let data = await response.json();
-            localStorage.setItem('tokenJWT', data.token); // Armazena o token JWT
-            window.location.href = 'listagemmanutencao.html'; // Redireciona para a página principal
-        } else if (response.status === 401) {
-            document.getElementById('message').innerText = 'Credenciais inválidas.';
-        } else if (response.status >= 500) {
-            document.getElementById('message').innerText = 'Erro no servidor. Tente novamente mais tarde.';
-        } else {
-            document.getElementById('message').innerText = 'Login falhou. Verifique suas credenciais.';
-        }
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.token); // Salvar token no localStorage
+        alert("Login bem-sucedido!");
+        navigate("/customer-management"); // Redirecionar para a página de gerenciamento de clientes
+      } else {
+        alert("Login falhou. Verifique suas credenciais.");
+      }
     } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('message').innerText = 'Ocorreu um erro ao processar sua solicitação.';
+      console.error("Erro durante o login:", error);
+      alert("Erro durante o login. Tente novamente mais tarde.");
     }
-});
+  };
+
+  // Função para redirecionar para a página de registro
+  const handleRegisterRedirect = () => {
+    navigate("/register");
+  };
+
+</script>
+
+  return (
+
+
+    
+    <div className="login-container">
+      <img src={logoBase64} alt="Logotipo" className="logo" />
+      <h1>Login</h1>
+      <form className="login-form" onSubmit={handleLogin}>
+        <div>
+        <p><label>Nome de Usuário:</label></p>
+          <input
+            type="text"
+            placeholder="Digite seu nome de usuário"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+        <p><label>Senha:</label></p>
+          <input
+            type="password"
+            placeholder="Digite sua senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      
+      <button onClick={handleRegisterRedirect} className="register-btn">
+        Criar Conta
+      </button>
+      </form>
+    </div>
+  );
+};
+
+export default Login;
+
+</body>
+</html>

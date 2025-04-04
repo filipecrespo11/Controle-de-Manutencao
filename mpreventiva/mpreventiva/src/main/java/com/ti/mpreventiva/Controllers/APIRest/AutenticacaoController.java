@@ -18,7 +18,6 @@ import com.ti.mpreventiva.Entities.Tecnico;
 import com.ti.mpreventiva.Security.SecurityConfiguration;
 import com.ti.mpreventiva.Services.TokenService;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/login")
@@ -51,7 +50,7 @@ public class AutenticacaoController {
         return ResponseEntity.ok("Login User Endpoint");
     }*/
 	
-	@PostMapping("/user")
+	 @PostMapping("/user")
 public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
     System.out.println("Tentativa de login com login: " + dados.login());
     var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
